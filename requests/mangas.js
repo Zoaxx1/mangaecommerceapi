@@ -21,16 +21,24 @@ routerManga.get('/', (req, res) => {
 
 // GET -----------------------------------------------------------------------
 // Mangas by title and volume
-// If it is per volume, one is sent
+// If it is per volume or id, one is sent
+// The ID have more priority
 routerManga.get('/:manga', listMangasMid, (req, res) => {
-    const volume = req.query.volume;
-    if(!volume || volume === 'unique'){
+    const {volume, id} = req.query;
+    if((!volume || volume === 'unique') && !id){
         return res.send(JSON.stringify(req.mangas));
     }
-    return res.send(JSON.stringify(req.mangas.find((manga) => manga.volume === Number(volume))));
+    return res.send(JSON.stringify(req.mangas.find((manga) => {
+        let isTheManga = false;
+        if(volume){
+            isTheManga = manga.volume === Number(volume);
+        }
+        if(id){
+            isTheManga = manga.id.toString() === id;
+        }
+        return isTheManga;
+    })));
 })
-
-//TODO get manga by id
 
 // Mangas by genre
 routerManga.get('/gender/:gender', listMangasMid, (req, res) => {
@@ -58,6 +66,14 @@ routerManga.post('/', (req, res) => {
 // DELETE ---------------------------------------------------------------------
 
 // TODO
+routerManga.delete('/:id', (req, res) => {
+    const id = req.params.id;
+    const index = mangasData.findIndex((manga) => manga.id.toString() === id);
+    if(index >= 0){
+        mangasData.splice(index, 1);
+    }
+    return res.send(JSON.stringify(mangasData));
+})
 
 // PATCH ----------------------------------------------------------------------
 
