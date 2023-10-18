@@ -65,7 +65,6 @@ routerManga.post('/', (req, res) => {
 
 // DELETE ---------------------------------------------------------------------
 
-// TODO
 routerManga.delete('/:id', (req, res) => {
     const id = req.params.id;
     const index = mangasData.findIndex((manga) => manga.id.toString() === id);
@@ -75,9 +74,19 @@ routerManga.delete('/:id', (req, res) => {
     return res.send(JSON.stringify(mangasData));
 })
 
-// PATCH ----------------------------------------------------------------------
+// PUT ----------------------------------------------------------------------
 
 // TODO
+routerManga.put('/:id', (req, res) => {
+    const updatedManga = req.body;
+    const id = req.params.id;
+    const index = mangasData.findIndex((manga) => manga.id === id);
+    if(index >= 0){
+        const manga = mangasData[index];
+        mangasData[index] = {...manga, ...updatedManga};
+    }
+    return res.send(JSON.stringify(mangasData[index]));
+})
 
 // USE ------------------------------------------------------------------------
 routerManga.use(listMangasMid);
